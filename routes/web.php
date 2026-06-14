@@ -8,6 +8,7 @@ use App\Http\Controllers\Shelter\PetPhotoController;
 use App\Http\Controllers\Volunteer\VolunteerDashboardController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Shelter\PetHistoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Volunteer\VolunteerScheduleController;
 
@@ -21,7 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('applications')->name('applications.')->group(function () {
         Route::post('/apply/{pet}', [ApplicationController::class, 'store'])->name('apply');
         Route::get('/my-applications', [ApplicationController::class, 'myApplications'])->name('my');
-	Route::get('/{application}', [ApplicationController::class, 'show'])->name('show');
+        Route::get('/{application}', [ApplicationController::class, 'show'])->name('show');
     });
 
     // Волонтёр
@@ -30,23 +31,26 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [VolunteerDashboardController::class, 'index'])->name('dashboard');
     });
 
-    // Управление питомцами
-  Route::prefix('shelter')->name('shelter.')->middleware('can:manage-pets')->group(function () {
-    Route::resource('pets', ShelterPetController::class);
-    
-    // Маршруты для фото (добавить ЭТИ три строки)
-    Route::post('pets/{pet}/photos', [PetPhotoController::class, 'store'])->name('pets.photos.store');
-    Route::delete('pets/{pet}/photos/{photo}', [PetPhotoController::class, 'destroy'])->name('pets.photos.destroy');
-    Route::put('pets/{pet}/photos/{photo}/primary', [PetPhotoController::class, 'setPrimary'])->name('pets.photos.primary');
-    
-    Route::get('/applications', [ShelterApplicationController::class, 'index'])->name('applications.index');
-Route::get('/applications/{application}', [ShelterApplicationController::class, 'show'])->name('applications.show');
-Route::post('/applications/{application}/review', [ShelterApplicationController::class, 'startReview'])->name('applications.review');
-Route::post('/applications/{application}/approve', [ShelterApplicationController::class, 'approve'])->name('applications.approve');
-Route::post('/applications/{application}/reject', [ShelterApplicationController::class, 'reject'])->name('applications.reject');
-Route::post('/applications/{application}/complete', [ShelterApplicationController::class, 'complete'])->name('applications.complete');
-});
-
+    // Управление питомцами (волонтёр/админ)
+    Route::prefix('shelter')->name('shelter.')->middleware('can:manage-pets')->group(function () {
+        Route::resource('pets', ShelterPetController::class);
+        
+        // Маршруты для фото
+        Route::post('pets/{pet}/photos', [PetPhotoController::class, 'store'])->name('pets.photos.store');
+        Route::delete('pets/{pet}/photos/{photo}', [PetPhotoController::class, 'destroy'])->name('pets.photos.destroy');
+        Route::put('pets/{pet}/photos/{photo}/primary', [PetPhotoController::class, 'setPrimary'])->name('pets.photos.primary');
+        
+        // Маршруты для управления заявками
+        Route::get('/applications', [ShelterApplicationController::class, 'index'])->name('applications.index');
+        Route::get('/applications/{application}', [ShelterApplicationController::class, 'show'])->name('applications.show');
+        Route::post('/applications/{application}/review', [ShelterApplicationController::class, 'startReview'])->name('applications.review');
+        Route::post('/applications/{application}/approve', [ShelterApplicationController::class, 'approve'])->name('applications.approve');
+        Route::post('/applications/{application}/reject', [ShelterApplicationController::class, 'reject'])->name('applications.reject');
+        Route::post('/applications/{application}/complete', [ShelterApplicationController::class, 'complete'])->name('applications.complete');
+        
+        // Маршруты для историй питомцев
+        Route::resource('pets.histories', PetHistoryController::class)->scoped(['pets' => 'pet']);
+    });
 
     // Админка
     Route::prefix('admin')->name('admin.')->middleware('can:access-admin-panel')->group(function () {
