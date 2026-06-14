@@ -4,7 +4,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Shelter\ShelterPetController;
 use App\Http\Controllers\Shelter\ShelterApplicationController;
-use App\Http\Controllers\Shelter\PetPhotoController;  // ← ЭТУ СТРОКУ ДОБАВИТЬ
+use App\Http\Controllers\Shelter\PetPhotoController;  
 use App\Http\Controllers\Volunteer\VolunteerDashboardController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\ProfileController;
@@ -37,8 +37,11 @@ Route::middleware('auth')->group(function () {
     Route::put('pets/{pet}/photos/{photo}/primary', [PetPhotoController::class, 'setPrimary'])->name('pets.photos.primary');
     
     Route::get('/applications', [ShelterApplicationController::class, 'index'])->name('applications.index');
-    Route::post('/applications/{application}/approve', [ShelterApplicationController::class, 'approve'])->name('applications.approve');
-    Route::post('/applications/{application}/reject', [ShelterApplicationController::class, 'reject'])->name('applications.reject');
+Route::get('/applications/{application}', [ShelterApplicationController::class, 'show'])->name('applications.show');
+Route::post('/applications/{application}/review', [ShelterApplicationController::class, 'startReview'])->name('applications.review');
+Route::post('/applications/{application}/approve', [ShelterApplicationController::class, 'approve'])->name('applications.approve');
+Route::post('/applications/{application}/reject', [ShelterApplicationController::class, 'reject'])->name('applications.reject');
+Route::post('/applications/{application}/complete', [ShelterApplicationController::class, 'complete'])->name('applications.complete');
 });
 
     // Админка
