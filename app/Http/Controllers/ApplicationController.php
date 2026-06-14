@@ -20,7 +20,6 @@ class ApplicationController extends Controller
             return back()->with('error', 'Этот питомец уже недоступен для усыновления');
         }
         
-        // Проверка на существующую заявку (ЭТО ДЛЯ ВЕТКИ VALIDATION)
         $existingApplication = AdoptionApplication::where('pet_id', $pet->id)
             ->where('applicant_id', auth()->id())
             ->whereIn('status', ['new', 'under_review', 'approved'])
