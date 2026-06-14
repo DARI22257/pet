@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('applications')->name('applications.')->group(function () {
         Route::post('/apply/{pet}', [ApplicationController::class, 'store'])->name('apply');
         Route::get('/my-applications', [ApplicationController::class, 'myApplications'])->name('my');
+	Route::get('/{application}', [ApplicationController::class, 'show'])->name('show');
     });
 
     // Волонтёр
@@ -40,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/applications/{application}/approve', [ShelterApplicationController::class, 'approve'])->name('applications.approve');
     Route::post('/applications/{application}/reject', [ShelterApplicationController::class, 'reject'])->name('applications.reject');
 });
+
 
     // Админка
     Route::prefix('admin')->name('admin.')->middleware('can:access-admin-panel')->group(function () {
