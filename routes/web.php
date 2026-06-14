@@ -9,6 +9,7 @@ use App\Http\Controllers\Volunteer\VolunteerDashboardController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Volunteer\VolunteerScheduleController;
 
 // Публичные маршруты
 Route::get('/', [PetController::class, 'index'])->name('pets.index');
@@ -25,6 +26,7 @@ Route::middleware('auth')->group(function () {
 
     // Волонтёр
     Route::prefix('volunteer')->name('volunteer.')->middleware('can:be-volunteer')->group(function () {
+    Route::resource('schedules', VolunteerScheduleController::class);
         Route::get('/dashboard', [VolunteerDashboardController::class, 'index'])->name('dashboard');
     });
 
