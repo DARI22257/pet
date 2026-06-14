@@ -47,4 +47,26 @@ class AdoptionApplication extends Model
             'completed' => 'secondary',
         ][$this->status] ?? 'secondary';
     }
+
+public function getStatusLabelAttribute()
+{
+    return [
+        'new' => 'Новая заявка',
+        'under_review' => 'На рассмотрении',
+        'approved' => 'Одобрена',
+        'rejected' => 'Отклонена',
+        'completed' => 'Завершена',
+    ][$this->status] ?? $this->status;
+}
+
+public function getStatusColorAttribute()
+{
+    return [
+        'new' => 'info',
+        'under_review' => 'warning',
+        'approved' => 'success',
+        'rejected' => 'danger',
+        'completed' => 'secondary',
+    ][$this->status] ?? 'secondary';
+}
 }
