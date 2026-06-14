@@ -8,78 +8,91 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('pets.index') }}">
-                <i class="bi bi-heart-fill text-danger"></i> Pet Shelter
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('pets.index') }}">Каталог</a>
-                    </li>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="{{ route('pets.index') }}">
+            <i class="bi bi-heart-fill text-danger"></i> Pet Shelter
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('pets.index') }}">
+                        <i class="bi bi-search"></i> Каталог
+                    </a>
+                </li>
+                
+                @auth
+                    @if(auth()->user()->role === 'adopter')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('applications.my') }}">
+                                <i class="bi bi-file-text"></i> Мои заявки
+                            </a>
+                        </li>
+                    @endif
                     
-                    @auth
-                        @if(auth()->user()->role === 'adopter')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('applications.my') }}">Мои заявки</a>
-                            </li>
-                        @endif
-                        
-                        @can('be-volunteer')
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                    Панель управления
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('shelter.pets.index') }}">Питомцы</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('shelter.applications.index') }}">Заявки</a></li>
-                                </ul>
-                            </li>
-                        @endcan
-                        
-                        @can('access-admin-panel')
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                    Админка
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('admin.categories.index') }}">Категории</a></li>
-                                </ul>
-                            </li>
-                        @endcan
-                        
+                    @can('be-volunteer')
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                {{ auth()->user()->name }}
+                                <i class="bi bi-briefcase"></i> Панель
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Профиль</a></li>
+                                <li><a class="dropdown-item" href="{{ route('shelter.pets.index') }}">🐾 Питомцы</a></li>
+                                <li><a class="dropdown-item" href="{{ route('shelter.applications.index') }}">📋 Заявки</a></li>
+                                <li><a class="dropdown-item" href="{{ route('volunteer.schedules.index') }}">📅 Расписание</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">Выйти</button>
-                                    </form>
-                                </li>
+                                <li><a class="dropdown-item" href="{{ route('volunteer.dashboard') }}">📊 Дашборд</a></li>
                             </ul>
                         </li>
-                    @else
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">Вход</a>
+                    @endcan
+                    
+                    @can('access-admin-panel')
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-shield-lock"></i> Админка
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('admin.categories.index') }}">🏷️ Категории</a></li>
+                                <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">📈 Статистика</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">Регистрация</a>
-                        </li>
-                    @endauth
-                </ul>
-            </div>
+                    @endcan
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">👤 Профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-box-arrow-right"></i> Выйти
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">
+                            <i class="bi bi-box-arrow-in-right"></i> Вход
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">
+                            <i class="bi bi-person-plus"></i> Регистрация
+                        </a>
+                    </li>
+                @endauth
+            </ul>
         </div>
-    </nav>
-
+    </div>
+</nav>
     <main class="py-4">
         <div class="container">
             @if(session('success'))
